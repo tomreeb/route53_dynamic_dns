@@ -1,14 +1,14 @@
 #!/bin/bash
 
-if [ "${AWS_ZONEID}" ]; then 
-  ZONEID="$AWS_ZONEID"
+if [ -z "$1" ]; then 
+  echo "ZONEID Parameter is not defined. Exiting"
+  exit 1
 else 
-  # Set Hosted Zone ID e.g. BJBK35SKMM9OE
-  ZONEID=""
+  ZONEID="$1"
 fi
 
 DOMAIN="$(
-  aws route53 list-resource-record-sets \
+  /usr/local/bin/aws route53 list-resource-record-sets \
      --hosted-zone-id "$ZONEID" \
      --query "ResourceRecordSets[?Type=='NS']" | \
      jq -r .[0].Name
@@ -34,7 +34,7 @@ TYPE="A"
 
 # Get Record set IP from Route 53
 DNSIP="$(
-   aws route53 list-resource-record-sets \
+   /usr/local/bin/aws route53 list-resource-record-sets \
       --hosted-zone-id "$ZONEID" \
       --query "ResourceRecordSets[?Name=='$RECORDSET']" | \
       jq -r .[0].ResourceRecords[].Value
@@ -93,7 +93,7 @@ else
 EOF
 
     # Update the Hosted Zone record
-    aws route53 change-resource-record-sets \
+    /usr/local/bin/aws route53 change-resource-record-sets \
         --hosted-zone-id $ZONEID \
         --change-batch file://"$TMPFILE" \
 		--query '[ChangeInfo.Comment, ChangeInfo.Id, ChangeInfo.Status, ChangeInfo.SubmittedAt]' \
