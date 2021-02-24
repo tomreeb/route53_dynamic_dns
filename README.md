@@ -51,6 +51,7 @@ $ echo 'export AWS_ZONEID=XXXXXXXXXXXX' >> ~/.bash_profile
 $ sudo cp ./route53_ddns.sh /usr/local/bin/route53_ddns.sh
 $ sudo chmod +x /usr/local/bin/route53_ddns.sh
 $ sudo touch /var/log/route53_ddns.log
+$ sudo chown $(whoami) /var/log/route53_ddns.log
 # Create cron job to update DNS every 2 minutes
 $ crontab -e
 */2 * * * * /usr/local/bin/route53_ddns.sh >> /var/log/route53_ddns.log
