@@ -20,8 +20,13 @@ HOSTNAME="$(
 
 RECORDSET="$HOSTNAME.$DOMAIN"
 
-# Get the external IP
-IP=$(curl -s http://checkip.amazonaws.com/)
+if [ -z "$2" ]; then 
+  # Get the external IP if no interface is provided
+  IP=$(curl -s http://checkip.amazonaws.com/)
+else
+  # Get IP of interface provided by second argument
+  IP=$(ip -4 addr show "$2" | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+fi
 
 # The Time-To-Live of this recordset
 TTL=300
@@ -68,7 +73,7 @@ if [ "$IP" == "$DNSIP" ] ; then
     echo "$(date) IP is still $IP. Exiting"
     exit 0
 else
-    LOGMESSAGE="$(date) Creating record for $RECORDSET to $IP, changed from $DNSIP"
+    LOGMESSAGE="$(date) Updating record for $RECORDSET to $IP, changed from $DNSIP"
     echo "$LOGMESSAGE"
     TMPFILE=$(mktemp /tmp/temporary-file.XXXXXXXX)
     cat > "${TMPFILE}" << EOF
