@@ -37,10 +37,12 @@ sudo apt install jq
 
 ### Running the Script
 
+The script requires a positional argument for the Route53 Zone ID to add that record to. There is a second option paramter to define the interface to get the IP for. If no argument is provided, the script will fetch the External Internet facing IP address of the device.
+
 ```bash
 $ export AWS_ZONEID='XXXXXXXXXXXX'
 $ chmod +x ./route53_ddns.sh 
-$ ./route53_ddns.sh
+$ ./route53_ddns.sh <route53 zone id>
 Wed Feb 24 10:52:30 EST 2021 IP is still 123.234.11.22. Exiting
 ```
 
